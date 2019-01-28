@@ -15,19 +15,15 @@ double gBuf[BUF_SIZE];
 unsigned int  gIndex = 0;
 
 double *rp, *wp;
+int r_count, w_count;
 
 void put_log(double *data)
 {
-  wp = gBuf;
+  if(w_count == 0) wp = gBuf;
   memcpy(gBuf,data,sizeof(double)*LOGBUFSIZE);
-  //wp+=LOGBUFSIZE;//?!
-}
-
-void set_str(char *str, double *data){
-  int i =0;
-  for(i =0;i<sizeof(data);i++){
-  // sprintf(str,",")
-  }
+  wp+=LOGBUFSIZE;//?!
+  w_count++;
+  if(w_count == BUF_SIZE/LOGBUFSIZE) w_count=0;
 }
 
 void save_log(void)
@@ -40,11 +36,13 @@ void save_log(void)
     exit(EXIT_FAILURE);
   }
 
-  rp = gBuf;
+  if(r_count == 0) rp = gBuf;
   write(fdf,rp,sizeof(double)*LOGBUFSIZE);
-  //write(fdf,rp,LOGBUFSIZE);
   close(fdf);
   printf("saved?\n");
+  rp+=LOGBUFSIZE;
+  r_count++;
+  if(r_count == BUF_SIZE/LOGBUFSIZE) r_count = 0;
 }
 
 int main(int argc, char *argv[])
