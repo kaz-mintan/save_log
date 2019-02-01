@@ -29,9 +29,9 @@ void put_log(float *data)
 
   wp+=LOGBUFSIZE;//?!
   w_count++;
-  if(w_count == BUF_SIZE/LOGBUFSIZE) w_count=0;
-}
 
+  if(w_count == BUF_SIZE/LOGBUFSIZE) w_count=0;
+} 
 void save_log(void)
 {
   int i;
@@ -74,21 +74,26 @@ int main(int argc, char *argv[])
     put_log(dat);
     save_log();
   }
-  float new_data;
-  float new_data2;
+
+  float test[2];
+  float *np;
+  np = test;
 
   for (i=0;i<3;i++) {
     char file[50];
     sprintf(file,"data/test%d.dat",i);
     int fd = open(file, O_RDONLY);
-    read(fd,&new_data,sizeof(float));
-    printf("read %d:%f from %s\n",i,new_data, file);
+    read(fd,np,sizeof(float)*LOGBUFSIZE);
 
-    fd+=sizeof(float);
-    read(fd,&new_data2,sizeof(float));
-    printf("read %d:%f from %s\n",i,new_data2, file);
+    memcpy(&test[0],np,sizeof(float));
+    printf("read %f-",test[0]);
+    np++;
+    memcpy(&test[1],np,sizeof(float));
+    np++;
+    printf("%f\n",test[1]);
+
+
     close(fd);
   }
-
 }
 
