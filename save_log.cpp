@@ -75,6 +75,7 @@ int main(int argc, char *argv[])
     save_log();
   }
   float new_data;
+  float new_data2;
 
   for (i=0;i<3;i++) {
     char file[50];
@@ -82,6 +83,10 @@ int main(int argc, char *argv[])
     int fd = open(file, O_RDONLY);
     read(fd,&new_data,sizeof(float));
     printf("read %d:%f from %s\n",i,new_data, file);
+
+    fd+=sizeof(float);
+    read(fd,&new_data2,sizeof(float));
+    printf("read %d:%f from %s\n",i,new_data2, file);
     close(fd);
   }
 
